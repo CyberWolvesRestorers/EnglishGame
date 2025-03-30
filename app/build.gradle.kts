@@ -40,7 +40,18 @@ android {
 }
 
 dependencies {
+    implementation(libs.retrofit)
+    implementation(libs.gsonConverter)
+    implementation(libs.loggingInterceptor)
+    implementation(libs.coroutines)
+    implementation(libs.loggingInterceptor)
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0") // или другая актуальная версия
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")  // для работы с жизненным циклом
+    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.compose.material3:material3:1.0.0")
+    implementation("androidx.compose.material:material:1.4.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -49,6 +60,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

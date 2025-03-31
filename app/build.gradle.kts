@@ -50,8 +50,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")  // для работы с жизненным циклом
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation("androidx.navigation:navigation-compose:2.6.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
     implementation("androidx.compose.material:material:1.4.0")
+    implementation("androidx.compose.material3:material3:<latest_version>")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -13,10 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -36,8 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -48,13 +47,6 @@ import com.cyberwolvesrestorers.englishgame.data.AuthViewModel
 import com.cyberwolvesrestorers.englishgame.data.ProfileViewModel
 import com.cyberwolvesrestorers.englishgame.model.ProfileData
 import com.cyberwolvesrestorers.englishgame.ui.theme.EnglishGameTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +60,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 // логин: kosty@kosty.ru
-// пароль: kosty
+// пароль:
 
 @Composable
 fun MyApp(context: Context) {
@@ -195,42 +187,6 @@ fun ProfileScreen(isLoggedIn: Boolean, onLoginStatusChange: (Boolean) -> Unit, p
     }
 }
 
-fun fetchProfileData(token: String, onResult: (ProfileData?) -> Unit) {
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val url = URL("https://eng.quassbot.ru/v1/profile/me")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
-            connection.setRequestProperty("Authorization", "Bearer ${'$'}token")
-            connection.connect()
-
-            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
-                val jsonObject = JSONObject(response)
-                val profile = ProfileData(
-                    id = jsonObject.getInt("id"),
-                    email = jsonObject.getString("email"),
-                    username = jsonObject.getString("username"),
-                    points = jsonObject.getInt("points"),
-                    streak = jsonObject.getInt("streak")
-                )
-                withContext(Dispatchers.Main) {
-                    onResult(profile)
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    onResult(null)
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                onResult(null)
-            }
-        }
-    }
-}
-
-
 @Composable
 fun LoginScreen(preferences: SharedPreferences, onSuccess: () -> Unit, authViewModel: AuthViewModel = viewModel()) {
     var email by remember { mutableStateOf("") }
@@ -241,9 +197,17 @@ fun LoginScreen(preferences: SharedPreferences, onSuccess: () -> Unit, authViewM
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp), verticalArrangement = Arrangement.Center) {
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Почта") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = email, onValueChange = { email = it },
+            label = { Text("Почта") },
+            modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Пароль") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Пароль") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
             isLoading = true
@@ -277,11 +241,21 @@ fun RegisterScreen(preferences: SharedPreferences, onSuccess: () -> Unit, authVi
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp), verticalArrangement = Arrangement.Center) {
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Почта") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = email,
+            onValueChange = { email = it },
+            label = { Text("Почта") },
+            modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
-        TextField(value = username, onValueChange = { username = it }, label = { Text("Имя") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = username,
+            onValueChange = { username = it },
+            label = { Text("Имя") },
+            modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Пароль") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = password,
+            onValueChange = { password = it },
+            label = { Text("Пароль") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
             isLoading = true
